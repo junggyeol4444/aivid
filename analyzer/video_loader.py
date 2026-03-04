@@ -84,3 +84,45 @@ def extract_frames(video_path: str, interval_sec: float = 2) -> list:
     cap.release()
     print(f"  총 {len(frames)}개의 프레임을 추출했습니다.")
     return frames
+
+
+def get_video_metadata(path: str) -> dict:
+    """
+    영상 파일의 메타데이터(해상도, fps, 길이 등)를 반환합니다.
+
+    Args:
+        path: 영상 파일 경로
+
+    Returns:
+        메타데이터 딕셔너리
+    """
+    cap = load_video(path)
+
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    duration_sec = total_frames / fps if fps > 0 else 0
+
+    cap.release()
+
+    # 파일 크기
+    file_size = os.path.getsize(path)
+    if file_size >= 1024 * 1024:
+        size_str = f"{file_size / (1024 * 1024):.1f} MB"
+    else:
+        size_str = f"{file_size / 1024:.1f} KB"
+
+    # 재생 시간 포맷
+    minutes = int(duration_sec // 60)
+    seconds = int(duration_sec % 60)
+    duration_str = f"{minutes}분 {seconds}초" if minutes > 0 else f"{seconds}초"
+
+    return {
+        "파일 경로": path,
+        "해상도": f"{width} x {height}",
+        "FPS": f"{fps:.1f}",
+        "총 프레임 수": str(total_frames),
+        "재생 시간": duration_str,
+        "파일 크기": size_str,
+    }

@@ -9,6 +9,10 @@
 - **장면 분석**: 각 프레임에서 객체 감지, 행동 인식, 장면 설명 생성
 - **전체 요약**: 영상 전체의 스토리/내용 자동 요약
 - **질의응답 (VQA)**: 영상 내용에 대해 자연어 질문 → 답변
+- **장면 전환 감지**: 프레임 간 차이 분석으로 장면 변화 시점 자동 감지
+- **HTML 리포트**: 분석 결과를 시각적인 HTML 리포트로 출력
+- **영상 메타데이터**: 해상도, FPS, 재생 시간 등 영상 정보 조회
+- **일괄 분석**: 여러 영상 파일을 한 번에 분석
 - **CLI 인터페이스**: 터미널에서 간편하게 사용
 - **웹 인터페이스**: Gradio 기반의 직관적인 웹 UI
 
@@ -56,6 +60,19 @@ python main.py analyze --video my_video.mp4 --model blip2
 # 영상 내용에 대해 질문하기
 python main.py ask --video my_video.mp4 --question "What is the person doing?"
 
+# 장면 전환 감지
+python main.py scenes --video my_video.mp4
+python main.py scenes --video my_video.mp4 --threshold 0.2 --sample-interval 1.0
+
+# HTML 리포트 생성
+python main.py report --video my_video.mp4 --output report.html
+
+# 영상 메타데이터 조회
+python main.py info --video my_video.mp4
+
+# 여러 영상 일괄 분석
+python main.py batch --videos v1.mp4 v2.mp4 v3.mp4 --output-dir results/
+
 # 웹 UI 실행
 python main.py web
 ```
@@ -67,8 +84,12 @@ python main.py web
 | `--video`, `-v` | 분석할 영상 파일 경로 | (필수) |
 | `--interval`, `-i` | 프레임 추출 간격 (초) | 2 |
 | `--model`, `-m` | 사용할 모델 (`base` 또는 `blip2`) | `base` |
-| `--output`, `-o` | 결과 저장 JSON 파일 경로 | 없음 |
+| `--output`, `-o` | 결과 저장 파일 경로 | 없음 |
 | `--question`, `-q` | 영상에 대한 질문 | (ask 명령 필수) |
+| `--threshold`, `-t` | 장면 전환 감지 임계값 (0~1) | 0.3 |
+| `--sample-interval`, `-s` | 장면 감지 샘플링 간격 (초) | 0.5 |
+| `--videos` | 일괄 분석할 영상 파일 경로들 | (batch 명령 필수) |
+| `--output-dir` | 일괄 분석 결과 저장 디렉토리 | 없음 |
 
 ### 웹 UI
 
@@ -80,7 +101,9 @@ python main.py web
 1. 영상 파일 업로드
 2. 프레임 간격 및 모델 선택
 3. **영상 분석 시작** 클릭 → 요약 및 프레임별 분석 결과 확인
-4. **질의응답** 탭에서 영상에 대해 자유롭게 질문
+4. **장면 전환 감지** 탭에서 장면 변화 시점 감지
+5. **질의응답** 탭에서 영상에 대해 자유롭게 질문
+6. **영상 정보** 탭에서 해상도, FPS, 재생 시간 등 확인
 
 ### Python API
 
@@ -127,7 +150,9 @@ aivid/
 │   ├── video_loader.py      # 영상 로드 및 프레임 추출 (OpenCV)
 │   ├── frame_analyzer.py    # 프레임 분석 (BLIP 모델 사용)
 │   ├── video_analyzer.py    # 전체 영상 분석 통합
-│   └── qa.py                # 영상 내용 질의응답 (VQA)
+│   ├── qa.py                # 영상 내용 질의응답 (VQA)
+│   ├── scene_detector.py    # 장면 전환 감지
+│   └── report.py            # HTML 리포트 생성
 ├── ui/
 │   ├── __init__.py
 │   └── web_app.py           # Gradio 웹 UI

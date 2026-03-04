@@ -11,3 +11,4 @@ build/
 env/
 venv/
 *.egg
+.pytest_cache/

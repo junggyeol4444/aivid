@@ -33,5 +33,11 @@ MAX_QA_TOKENS = 30
 # 요약 및 UI에 표시할 상위 객체 수
 TOP_OBJECTS_COUNT = 5
 
+# 장면 전환 감지 기본 임계값 (0~1, 클수록 둔감)
+SCENE_CHANGE_THRESHOLD = 0.3
+
+# 장면 전환 감지 프레임 샘플링 간격 (초)
+SCENE_SAMPLE_INTERVAL = 0.5
+
 # 웹 UI 포트
 WEB_PORT = 7860
